@@ -39,8 +39,8 @@
             compatible = "zmk,behavior-tap-dance";
             label = "TD_LOWER_RAISE";
             #binding-cells = <0>;
-            tapping-term-ms = <200>;
-            bindings = <&mo LOWER>, <&mo RAISE>, <&mo FUNC>;
+            tapping-term-ms = <500>;
+            bindings = <&mo LOWER>, <&mo RAISE>, <&to FUNC>;
         };
 
         // Conditional layer for ADJUST layer
