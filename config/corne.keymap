@@ -13,12 +13,33 @@
 #define LOWER   1
 #define RAISE   2
 #define FUNC    3
+#define NAV     4
 
 &led_strip {
     chain-length = <27>;
 };
 
 / {
+    behaviors {
+        // Tap dance behavior for layer activation
+        td_lower_raise: tap_dance_lower_raise {
+            compatible = "zmk,behavior-tap-dance";
+            label = "TD_LOWER_RAISE";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&mo LOWER>, <&mo RAISE>, <&mo FUNC>;
+        };
+
+        // Conditional layer for ADJUST layer
+        conditional_layers {
+            compatible = "zmk,conditional-layers";
+            adjust_layer {
+                if-layers = <LOWER RAISE>;
+                then-layer = <FUNC>;
+            };
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
         default_layer {
@@ -30,7 +51,7 @@
             //│ LCTRL     │ A         │ S         │ D         │ F         │ G         │   │ H         │ J         │ K         │ L         │ ;         │ '         │
                 &kp LCTRL   &kp A       &kp S       &kp D       &kp F       &kp G           &kp H       &kp J       &kp K       &kp L       &kp SEMI    &kp SQT
             //├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤   ├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-            //│ LSHFT     │ Z         │ X         │ C         │ V         │ B         │   │ N         │ M         │ COMMA     │ DOT       │ FWDSLH    │ ESC         │
+            //│ LSHFT     │ Z         │ X         │ C         │ V         │ B         │   │ N         │ M         │ COMMA     │ DOT       │ FWDSLH    │ ESC       │
                 &kp LSHFT   &kp Z       &kp X       &kp C       &kp V       &kp B           &kp N       &kp M       &kp COMMA   &kp DOT     &kp FSLH    &kp ESC
             //╰───────────┴───────────┴───────────┼───────────┼───────────┤───────────┼   ├───────────┼───────────┼───────────┼───────────┴───────────┴───────────╯
             //                                    │ LALT      │ LOWER     │ SPACE     │   │ ENTER     │ RAISE     │ WINDOWS   │
@@ -49,14 +70,20 @@
             //╭───────────┬───────────┬───────────┬───────────┬───────────┬───────────╮   ╭───────────┬───────────┬───────────┬───────────┬───────────┬───────────╮
             //│ TAB       | 1         │ 2         │ 3         │ 4         │ 5         │   │ 6         │ 7         │ 8         │ 9         │ 0         │ BSPC      │
                 &kp TAB     &kp N1      &kp N2      &kp N3      &kp N4      &kp N5          &kp N6      &kp N7      &kp N8      &kp N9      &kp N0      &kp BSPC
+            //├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤   ├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+            //│ LCTRL     │ BT1       │ BT2       │ BT3       │ BT4       │ BT5       │   │ LEFT      │ DOWN      │ UP        │ RIGHT     │           │           │
+                &kp LCTRL   &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &kp LEFT   &kp DOWN    &kp UP      &kp RIGHT   &trans      &trans
+            //├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤   ├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+            //│ LCTRL     │           │           │           │           │           │   │           │           │           │           │           │           │
+                &kp LSHFT   &trans      &trans      &trans      &trans      &trans          &trans      &trans      &trans      &trans      &trans      &trans
+            //╰───────────┴───────────┴───────────┼───────────┼───────────┤───────────┼   ├───────────┼───────────┼───────────┼───────────┴───────────┴───────────╯
+            //                                    │           │           │ SPACE     │   │ ENTER     │           │           │
+                                                    &trans      &trans      &kp SPACE       &kp RET     &none       &trans
+            //                                    ╰───────────┴───────────┴───────────╯   ╰───────────┴───────────┴───────────╯
+            >;
+        };
 
-   &kp LCTRL  &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3   &bt BT_SEL 4   &kp LEFT &kp DOWN &kp UP &kp RIGHT &kp PG_UP &trans
-   &kp LSHFT  &trans       &trans       &trans       &trans       &trans         &trans   &trans   &trans &trans    &kp PG_DN &trans
-                                    &trans     &trans       &kp SPACE      &kp RET  &mo FUNC   &trans
-                        >;
-                };
-
-                raise_layer {
+        raise_layer {
 // -----------------------------------------------------------------------------------------
 // |  TAB |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  | BSPC |
 // | CTRL |     |     |     |     |     |   |  -  |  =  |  [  |  ]  |  \  |  `   |
@@ -66,7 +93,7 @@
    &kp  TAB  &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT   &kp CARET &kp AMPS  &kp ASTRK &kp LPAR &kp RPAR &kp BSPC
    &kp LCTRL &trans   &trans &trans   &trans   &trans      &kp MINUS &kp EQUAL &kp LBKT  &kp RBKT &kp BSLH &kp GRAVE
    &kp LSHFT &trans   &trans &trans   &trans   &trans      &kp UNDER &kp PLUS  &kp LBRC  &kp RBRC &kp PIPE &kp TILDE
-                             &trans &mo FUNC   &kp SPACE   &kp RET   &trans    &trans
+                             &trans &none   &kp SPACE   &kp RET   &trans    &trans
                         >;
                 };
 
