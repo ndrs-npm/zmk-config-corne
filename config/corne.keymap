@@ -5,8 +5,9 @@
  */
 
 #include <behaviors.dtsi>
-#include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/rgb.h>
 
 #define DEFAULT 0
@@ -66,7 +67,7 @@
                 &kp TAB     &kp Q       &kp W       &kp E       &kp R       &kp T           &kp Y       &kp U       &kp I       &kp O       &kp P       &kp BSPC
             //├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤   ├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
             //│ LCTRL     │ A         │ S         │ D         │ F         │ G         │   │ H         │ J         │ K         │ L         │ ;         │ '         │
-                &kp LCTRL   &kp A    &kp S       &kp D       &kp F       &kp G           &kp H       &kp J       &kp K       &kp L       &kp SEMI    &kp SQT
+                &kp LCTRL   &kp A       &kp S       &kp D       &kp F       &kp G           &kp H       &kp J       &kp K       &kp L       &kp SEMI    &kp SQT
             //├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤   ├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
             //│ LSHFT     │ Z         │ X         │ C         │ V         │ B         │   │ N         │ M         │ COMMA     │ DOT       │ FWDSLH    │ ESC       │
                 &kp LSHFT   &kp Z       &kp X       &kp C       &kp V       &kp B           &kp N       &kp M       &kp COMMA   &kp DOT     &kp FSLH    &kp ESC
@@ -96,31 +97,68 @@
         };
 
         raise_layer {
-// -----------------------------------------------------------------------------------------
-// |  TAB |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  | BSPC |
-// | CTRL |     |     |     |     |     |   |  -  |  =  |  [  |  ]  |  \  |  `   |
-// | SHFT |     |     |     |     |     |   |  _  |  +  |  {  |  }  | "|" |  ~   |
-//                    |     | FN  | SPC |   | ENT |     |     |
-                        bindings = <
-   &kp  TAB  &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT   &kp CARET &kp AMPS  &kp ASTRK &kp LPAR &kp RPAR &kp BSPC
-   &kp LCTRL &trans   &trans &trans   &trans   &trans      &kp MINUS &kp EQUAL &kp LBKT  &kp RBKT &kp BSLH &kp GRAVE
-   &kp LSHFT &trans   &trans &trans   &trans   &trans      &kp UNDER &kp PLUS  &kp LBRC  &kp RBRC &kp PIPE &kp TILDE
-                             &trans &trans  &kp SPACE   &kp RET   &trans    &trans
-                        >;
-                };
-
-                function_layer {
-// -----------------------------------------------------------------------------------------
-// |  TAB |  F1 |  F2 |  F3 |  F4 |  F5 |   |  F6 |  F7 |  F8  |  F9   | F10    | BSPC  |
-// | CTRL | F11 | F12 |     |     |BTCLR|   |     |C_PP |RGBHUI|RGBBRI | RGBTOG | VOLUP |
-// | SHFT |     |     |     |     |     |   |     |     |RGBHUD|RGBBRD | RGBEFF | VOLDN |
-//                    |     |     | SPC |   | ENT |     |      |
-                        bindings = <
-   &kp TAB    &kp F1   &kp F2    &kp F3   &kp F4   &kp F5      &kp F6    &kp F7    &kp F8           &kp F9           &kp F10       &kp BSPC
-   &kp LCTRL  &kp F11  &kp F12   &trans   &trans   &bt BT_CLR  &trans    &kp C_PP  &rgb_ug RGB_HUI  &rgb_ug RGB_BRI  &rgb_ug RGB_TOG  &kp C_VOL_UP
-   &kp LSHFT  &trans   &trans    &trans   &trans   &trans      &trans    &trans    &rgb_ug RGB_HUD  &rgb_ug RGB_BRD  &rgb_ug RGB_EFF  &kp C_VOL_DN
-                                 &trans   &trans   &kp SPACE   &kp RET   &trans    &trans
-                        >;
-                };
+            bindings = <
+            //╭───────────┬───────────┬───────────┬───────────┬───────────┬───────────╮   ╭───────────┬───────────┬───────────┬───────────┬───────────┬───────────╮
+            //│ TAB       │ !         │ @         │ #         │ $         │ %         │   │ ^         │ &         │ *         │ (         │ )         │ BSPC      │
+                &kp TAB     &kp EXCL    &kp AT      &kp HASH    &kp DLLR    &kp PRCNT       &kp CARET   &kp AMPS    &kp ASTRK   &kp LPAR    &kp RPAR    &kp BSPC
+            //├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤   ├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+            //│ LCTRL     │           │           │           │           │           │   │ -         │ =         │ [         │ ]         │ \         │ `         │
+                &kp LCTRL   &trans      &trans      &trans      &trans      &trans          &kp MINUS   &kp EQUAL   &kp LBKT    &kp RBKT    &kp BSLH    &kp GRAVE
+            //├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤   ├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+            //│ LSHFT     │           │           │           │           │           │   │ _         │ +         │ {         │ }         │ |         │ ~         │
+                &kp LSHFT   &trans      &trans      &trans      &trans      &trans          &kp UNDER   &kp PLUS    &kp LBRC    &kp RBRC    &kp PIPE    &kp TILDE
+            //╰───────────┴───────────┴───────────┼───────────┼───────────┤───────────┼   ├───────────┼───────────┼───────────┼───────────┴───────────┴───────────╯
+            //                                    │           │           │ SPACE     │   │ ENTER     │           │           │
+                                                    &trans      &trans      &kp SPACE       &kp RET     &trans      &trans
+            //                                    ╰───────────┴───────────┴───────────╯   ╰───────────┴───────────┴───────────╯
+            >;
         };
+
+        function_layer {
+            bindings = <
+            //╭───────────┬───────────┬───────────┬───────────┬───────────┬───────────╮   ╭───────────┬───────────┬───────────┬───────────┬───────────┬───────────╮
+            //│ TAB       │ F1        │ F2        │ F3        │ F4        │ F5        │   │ F6        │ F7        │ F8        │ F9        │ F10       │ BSPC      │
+                &kp TAB     &kp F1      &kp F2      &kp F3      &kp F4      &kp F5          &kp F6      &kp F7      &kp F8      &kp F9      &kp F10     &kp BSPC
+            //├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤   ├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+            //│ CTRL      │ F11       │ F12       │           │           │ BTCLR     │   │ ON_EXTPWR │ PLAYPAUSE │ RGBHUI    │ RGBBRI    │ RGBTOG    │ VOLUP     │
+                &kp LCTRL   &kp F11     &kp F12     &trans      &trans      &bt BT_CLR      &ext_power EP_ON &kp C_PP &rgb_ug RGB_HUI &rgb_ug RGB_BRI &rgb_ug RGB_TOG &kp C_VOL_UP
+            //├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤   ├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+            //│ SHFT      │           │           │           │           │           │   │ OFF_EXTPWR│           │ RGBHUD    │ RGBBRD    │ RGBEFF    │ VOLDN     │
+                &kp LSHFT   &trans      &trans      &trans      &trans      &trans          &ext_power EP_OFF &trans &rgb_ug RGB_HUD  &rgb_ug RGB_BRD  &rgb_ug RGB_EFF  &kp C_VOL_DN
+            //╰───────────┴───────────┴───────────┼───────────┼───────────┤───────────┼   ├───────────┼───────────┼───────────┼───────────┴───────────┴───────────╯
+            //                                    │           │           │ SPACE     │   │ ENTER     │           │           │
+                                                    &trans      &trans      &kp SPACE       &kp RET     &trans      &trans
+            //                                    ╰───────────┴───────────┴───────────╯   ╰───────────┴───────────┴───────────╯
+            >;
+        };
+
+//         raise_layer {
+// // -----------------------------------------------------------------------------------------
+// // |  TAB |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  | BSPC |
+// // | CTRL |     |     |     |     |     |   |  -  |  =  |  [  |  ]  |  \  |  `   |
+// // | SHFT |     |     |     |     |     |   |  _  |  +  |  {  |  }  | "|" |  ~   |
+// //                    |     | FN  | SPC |   | ENT |     |     |
+//                         bindings = <
+//    &kp  TAB  &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT   &kp CARET &kp AMPS  &kp ASTRK &kp LPAR &kp RPAR &kp BSPC
+//    &kp LCTRL &trans   &trans &trans   &trans   &trans      &kp MINUS &kp EQUAL &kp LBKT  &kp RBKT &kp BSLH &kp GRAVE
+//    &kp LSHFT &trans   &trans &trans   &trans   &trans      &kp UNDER &kp PLUS  &kp LBRC  &kp RBRC &kp PIPE &kp TILDE
+//                              &trans &trans  &kp SPACE   &kp RET   &trans    &trans
+//                         >;
+//                 };
+// 
+//                 function_layer {
+// // -----------------------------------------------------------------------------------------
+// // |  TAB |  F1 |  F2 |  F3 |  F4 |  F5 |   |  F6 |  F7 |  F8  |  F9   | F10    | BSPC  |
+// // | CTRL | F11 | F12 |     |     |BTCLR|   |     |C_PP |RGBHUI|RGBBRI | RGBTOG | VOLUP |
+// // | SHFT |     |     |     |     |     |   |     |     |RGBHUD|RGBBRD | RGBEFF | VOLDN |
+// //                    |     |     | SPC |   | ENT |     |      |
+//                         bindings = <
+//    &kp TAB    &kp F1   &kp F2    &kp F3   &kp F4   &kp F5      &kp F6    &kp F7    &kp F8           &kp F9           &kp F10       &kp BSPC
+//    &kp LCTRL  &kp F11  &kp F12   &trans   &trans   &bt BT_CLR  &trans    &kp C_PP  &rgb_ug RGB_HUI  &rgb_ug RGB_BRI  &rgb_ug RGB_TOG  &kp C_VOL_UP
+//    &kp LSHFT  &trans   &trans    &trans   &trans   &trans      &trans    &trans    &rgb_ug RGB_HUD  &rgb_ug RGB_BRD  &rgb_ug RGB_EFF  &kp C_VOL_DN
+//                                  &trans   &trans   &kp SPACE   &kp RET   &trans    &trans
+//                         >;
+//                 };
+
+    };
 };
